@@ -1,5 +1,7 @@
 from django.db import models
 
+# Create your models here.
+
 class Order(models.Model):
     ord_ymd = models.CharField(max_length=16, verbose_name='ORD_YMD')
     acct_mang_dbrn_code = models.CharField(max_length=16, verbose_name='ACCT_MANG_DBRN_CODE')
