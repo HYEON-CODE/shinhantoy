@@ -17,12 +17,10 @@ class MemberRegisterView(
     def post(self, request, *args, **kwargs):
         return self.create(request, args, kwargs)
 
-
 class MemberChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, *args, **kwargs):
-        username = request.data.get('username')
         current = request.data.get('current')
         password1 = request.data.get('password1')
         password2 = request.data.get('password2')
@@ -32,12 +30,7 @@ class MemberChangePasswordView(APIView):
                 'detail': 'Wrong new passwords',
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if not Member.objects.filter(username=username).exists():
-            return Response({
-                'detail': 'No account',
-            }, status=status.HTTP_404_NOT_FOUND)
-
-        member = Member.objects.get(username=username)
+        member = request.user
         if not check_password(current, member.password):
             return Response({
                 'detail': 'Wrong password',
