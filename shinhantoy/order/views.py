@@ -1,24 +1,22 @@
 from rest_framework import generics, mixins
+
+from .serializers import OrderSerializer, CommentSerializer, CommentCreateSerializer
 from .models import Order, Comment
-from .serializers import (
-    OrderSerializer, 
-    CommentCreateSerializer, 
-    CommentSerializer
-    )
-from .paginations import OrderLargePagination
+
+# Create your views here.
 
 class OrderListView(
-    mixins.ListModelMixin, 
+    mixins.ListModelMixin,
     generics.GenericAPIView
 ):
     serializer_class = OrderSerializer
-    pagination_class = OrderLargePagination
 
     def get_queryset(self):
         return Order.objects.all().order_by('-id')
 
     def get(self, request, *args, **kwargs):
-        return self.list(self, request, args, kwargs)
+        return self.list(request, args, kwargs)
+
 
 class OrderDetailView(
     mixins.RetrieveModelMixin,
@@ -27,27 +25,34 @@ class OrderDetailView(
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return Order.objects.all().order_by('id')
+        return Order.objects.all().order_by('-id')
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, args, kwargs)
 
-class CommentView(
-    mixins.CreateModelMixin,
+
+class CommentListView(
     mixins.ListModelMixin,
     generics.GenericAPIView
 ):
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return CommentCreateSerializer
-        return CommentSerializer
+    serializer_class = CommentSerializer
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return Comment.objects.filter(order_id = pk)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, args, kwargs)
+        order_id = self.kwargs.get('order_id')
+        if order_id:
+            return Comment.objects.filter(order_id=order_id).order_by('-id')
+        
+        return Comment.objects.none()
 
     def get(self, request, *args, **kwargs):
         return self.list(request, args, kwargs)
+
+
+class CommentCreateView(
+    mixins.CreateModelMixin,
+    generics.GenericAPIView
+):
+    serializer_class = CommentCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, args, kwargs)

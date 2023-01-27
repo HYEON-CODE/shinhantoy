@@ -140,7 +140,7 @@ REST_FRAMEWORK = {
 
 import datetime
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=12),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(hours=2),
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
     "AUTH_HEADER_TYPES": ("JWT", ),
 }
