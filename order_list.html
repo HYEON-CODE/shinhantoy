@@ -13,6 +13,7 @@
         if (!page) {
             page = 1;
         }
+        page = Number(page);
 
         $(document).ready(function () {
             $.get("http://127.0.0.1:8000/api/order")
@@ -34,8 +35,8 @@
             $.get("http://127.0.0.1:8000/api/order?page=" + page)
                 .then((result) => {
                         const total = Math.ceil(result.count/10)
-                        let start_page = parseInt(page) - 2;
-                        let end_page = parseInt(page) + 2;
+                        let start_page = page - 2;
+                        let end_page = page + 2;
 
                         if (start_page < 1) {
                             start_page = 1;
@@ -48,7 +49,7 @@
                         $("#pagination").html("");
 
                         for (let i=start_page; i<=end_page; i++) {
-                            if (i==parseInt(page)) {
+                            if (i==page) {
                                 $("#pagination").append(
                                     $(`<li class="page-item active"><a class="page-link" onclick="go_page(${i})">${i}</a>
                                     </li>`)
@@ -82,7 +83,6 @@
         </ul>
         <nav aria-label="Page navigation example">
             <ul class="pagination" id="pagination">
-                <li class="page-item"><a class="page-link" onclick="go_page(1)">1</a></li>
             </ul>
         </nav>
     </div>
