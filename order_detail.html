@@ -9,6 +9,11 @@
     <script>
         const search = new URLSearchParams(location.search);
         const pk = search.get('pk');
+        let page = search.get('page');
+
+        if (!page) {
+            page = 1;
+        }
 
         function create() {
             $.ajax({
@@ -43,8 +48,28 @@
                         }
                     });
 
-                $.get("http://127.0.0.1:8000/api/order/" + pk + '/comment')
+                $.get("http://127.0.0.1:8000/api/order/" + pk + '/comment?page=' + page)
                     .then((result) => {
+                        let page = Math.ceil(result.count/10)
+                        let start_page = page - 3;
+                        let end_page = page + 3;
+
+                        if (start_page < 1) {
+                            start_page = 1;
+                        }
+                        if (end_page > page) {
+                            end_page = page;
+                        }
+                        
+                        $("#pagination").html("");
+
+                        for (let i=start_page; i<=end_page; i++) {
+                            $("#pagination").append(
+                                $(`<li class="page-item active"><a class="page-link" onclick="go_page(${i})">${i}</a>
+                                </li>`)
+                            );
+                        }
+
                         $("#comments").html("");
 
                         for (let i=0; i<result.results.length; i++) {
@@ -60,10 +85,20 @@
                     });
             }
         });
+
+        
+        function go_page(page) {
+            const search = new URLSearchParams(location.search);
+            const pk = search.get('pk');
+
+            window.location.href = `?pk=${pk}&page=${page}`;
+        }
     </script>
   </head>
   <body>
     <div class="container">
+        <h1 class="text-center">주문 상세</h1>
+        <hr>
         <ul id="info">
         </ul>
         <hr>
@@ -81,6 +116,11 @@
         <ul class="list-group list-group-flush" id="comments">
             <li class="list-group-item">댓글 내용.<br><br>이관현 (2023.01.27 09:00:01)</li>
         </ul>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination" id="pagination">
+                <li class="page-item"><a class="page-link" onclick="go_page(1)">1</a></li>
+            </ul>
+        </nav>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   </body>
