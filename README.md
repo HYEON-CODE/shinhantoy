@@ -2,9 +2,8 @@
 
 ## Installation 
 ```
-pip install django
-pip install django djangorestframework djangorestframework-simplejwt
-pip install django-cors-headers
+shinhantoy>.\venv\Scripts\activate
+pip install -r requirements.txt
 ```
 ## Execution
 ```
