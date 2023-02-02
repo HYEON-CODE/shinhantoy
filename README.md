@@ -9,7 +9,6 @@ python manage.py migrate
 ```
 ## Execution
 ```
-shinhantoy>.\venv\Scripts\activate
 shinhantoy>cd shinhantoy
 shinhantoy\shinhantoy>python manage.py runserver
 ```
